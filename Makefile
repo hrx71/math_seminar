@@ -1,7 +1,7 @@
 SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
-
+#Test
 EXE := $(BIN_DIR)/main # executable in bin directory
 SRC := $(wildcard $(SRC_DIR)/*.cpp) # list all source-files
 OBJ := $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o) #list alle appr. obj to src files
