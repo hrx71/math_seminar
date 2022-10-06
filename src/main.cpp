@@ -1,26 +1,12 @@
 #include <cstddef>
 #include <iostream>
-#include <matrix_class.hpp>
 #include <funcs.hpp>
 #include <vector>
-
-struct coeff
-{
-
-    int* data;
-    coeff(int a)
-      : data(new int[a])
-    {
-    }
-
-    ~coeff() { delete[] data; }
-};
 
 
 int
 main()
 {
-    Matrix<double> A(2,3,StorageOrder::ColMajor);
     std::cout << "Testing multiinverse!";
     std::cout << std::endl;
     int inv = multinverse(3,17);
@@ -39,7 +25,7 @@ main()
     u[1] = -21;
     u[2] = -30;
 	    
-    integerCRA(m, u, &gamma);
+    integerCRA(m, u, gamma);
 
     for(size_t i=0; i<2; ++i) {
 	std::cout << "gamma= " << gamma[i];
