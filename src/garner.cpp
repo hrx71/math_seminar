@@ -2,21 +2,40 @@
 #include <iostream>
 #include <vector>
 
+using namespace std;
+
 // array int klasse
-void integerCRA(int* m, int* u,std::vector<int> &gamma)
+void integerCRA(int* m, int* u,  size_t const size)
 {
-    int* mp = new int[3];
-    const int maxsize = 2;
-    for(std::size_t k=0; k<maxsize; ++k) 
+    //Step 1- Compute the modular multiplicative inverse gamma[?] 
+    int* mp = new int[size];
+    int* gamma = new int[size];
+    
+    for(size_t k=0; k<size-1; ++k) 
     {
-	mp[k] = 1;
-	for(std::size_t i=0; i<k-1; ++i) 
+	mp[k] = m[0];
+	for(size_t i=1; i<k+1; ++i) 
 	{
-	   mp[k] *= m[i]; 
+	   mp[i] *= m[i]; 
 	}
-	gamma[k] = multinverse(mp[k],m[k]);
+	// do 99 % 97 --> 2 modular inverse is the same as 99 mod 97 kongruent 2 mod 97
+	gamma[k] = multinverse(mp[k] % m [k+1],m[k+1]);
     }
-   // delete[] gamma;
+
+
+    for(size_t i=0; i<size-1; ++i) {
+	 cout << "gamma= " << gamma[i];
+	 cout << std::endl;
+    }
+
+    //Step 2- Compute the radix coefficients
+
+    
+
+
+
+
+    delete[] gamma;
     delete[] mp;
 }
 
