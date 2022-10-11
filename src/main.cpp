@@ -10,7 +10,7 @@ main()
 {
     cout << "Testing multiinverse!";
     cout << std::endl;
-    int inv = multinverse(346,95);
+    int inv = multinverse(97,95);
     cout << "Inverse is inv = " << inv;
     cout << std::endl;
     

@@ -1,36 +1,34 @@
 #include <numeric>
 #include <iostream>
+using namespace std;
 int 
 multinverse(int a, int b) 
 {
-    if (std::gcd(a,b) != 1) {
-	std::cout << "a is not invertible";
-	std::cout <<std::endl;
+    int m = b;
+    int y = 0, x = 1;
+ 
+    if (b == 1)
+        return 0;
+ 
+    while (a > 1) {
+        // q is quotient
+        int q = a / b;
+        int t = b;
+ 
+        // m is remainder now, process same as
+        b = a % b, a = t;
+        t = y;
+ 
+        // Update y and x
+        y = x - q * y;
+        x = t;
     }
-    
-    if (b>a) 
-    {
-	int tmp=a;
-	a = b;
-	b = tmp;
-    }
-    
-    int t = 0;
-    int tt = 1;
-    int r;
-    int q;
-    int T;
-
-    while (b != 0) 
-    {
-	r = a % b;
-	q = (a-r)/b;
-	T = t-tt*q;
-    // Reordering
-	a = b;
-	b = r;
-	t = tt;
-	tt = T;
-    }
-    return t;
+ 
+    // Make x positive
+    /*if (x < 0)
+        x += m;
+ */
+    return x;
 }
+    
+
