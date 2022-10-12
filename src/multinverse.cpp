@@ -25,9 +25,9 @@ multinverse(int a, int b)
     }
  
     // Make x positive
-    /*if (x < 0)
+    if (x < 0)
         x += m;
- */
+ 
     return x;
 }
     
