@@ -24,7 +24,7 @@ struct Vector {
       assert(i < m);
       return data[i];
    }
-   
+
    std::size_t& operator()(std::size_t i) {
       assert(i < m);
       return data[i];
@@ -44,3 +44,4 @@ struct Vector {
       }
    }
 };
+

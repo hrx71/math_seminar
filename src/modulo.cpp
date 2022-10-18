@@ -1,16 +1,10 @@
-#include <iostream>
-
-// computo modulo symmetric representation
-int modulo_sym(int n, int d){
-    int r = (n%d + d)%d;
-    /*if (r > d/2) {
-        r = -(-r + d);
+#include <stdlib.h>   
+int
+modulo(int a, int b)
+{
+ int r = (a%b + b)%b;
+/*    if (r > b/2) {
+        r = -(-r + b);
     }*/
     return r;
-}
-
-// compute division with modulo
-int division_modulo(int a, int b, int p){
-    int invert = multinverse(b, p);
-    return (a * invert)%p;
 }

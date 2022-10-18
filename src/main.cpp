@@ -7,7 +7,8 @@ using namespace std;
 int
 main()
 {
-    switch (3) {
+    
+    switch (1) {
 	case 1: {
 	    size_t const size = 5;
 	    int* m = new int[size + 1];
@@ -147,6 +148,28 @@ main()
 	    break;
 	}
     }
+    
+    cout<<"Testing Matrix Class\n";
+    Matrix A(3,4,StorageOrder::RowMajor);
+
+    cout<<"Initializing the Matrix:\n";
+    int modop = 1;
+    int mod = 13;
+    init(A, mod, 0);
+    A.print();
+    cout <<"\n";
+    
+    if(modop) {
+	cout<<"mod operation on Matrix:\n";
+	init(A, mod, modop);
+	A.print();
+	cout <<"\n";
+    }
+    cout << "Testing Gauss determinant:\n";
+    int det = modularGauss(A, mod);
+    cout <<"\n";
+    cout << "det = " << det << endl << endl;
+
     return (0);
 }
 

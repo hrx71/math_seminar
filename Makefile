@@ -11,7 +11,7 @@ CC := g++
 #MP: adds a phony target for each dependency other than the main file, causing each to depend on nothing. This rule gives error if you remove the header files without updating the Makefile to match.
 #MMD: -only user header files not system header files
 CPPFLAGS := -Iinclude -MMD -MP
-CFLAGS   := -Wall -g
+CFLAGS   := -Wall -g 
 #Linker Flags
 LDFLAGS  := -Llib
 LDLIBS   := -lm
