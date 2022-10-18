@@ -1,4 +1,12 @@
 #include <funcs.hpp>
+
+/**
+ * @brief Initialisation function for matrix struct
+ * 
+ * @param M Matrix to be initialised or overwritten
+ * @param mod prime number if modular version is needed
+ * @param modop bool if modulo should be applied to matrix
+ */
 void
 init(Matrix& M, int mod, bool modop)
 {

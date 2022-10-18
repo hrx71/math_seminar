@@ -1,11 +1,10 @@
 #include <cassert> /* needed for assert */
-#include <cstddef> /* needed for std::size_t and std::ptrdiff_t */
 #include <iostream>
 
 /**
  * @brief Vector class
  * 
- * 
+ * struct to store vectors of integers, access and modify their values.
  */
 struct Vector {
    const std::size_t m; /* number of rows */
@@ -20,11 +19,13 @@ struct Vector {
       delete[] data;
    }
 
+   // provide value (read data)
    const std::size_t& operator()(std::size_t i) const {
       assert(i < m);
       return data[i];
    }
 
+   // access value (write data)
    std::size_t& operator()(std::size_t i) {
       assert(i < m);
       return data[i];

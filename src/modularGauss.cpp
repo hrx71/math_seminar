@@ -2,6 +2,15 @@
 #include <funcs.hpp>
 #include <iostream>
 
+/**
+ * @brief Performs backward substitution considering modulo
+ * 
+ * @param R right upper triangular matrix (rows might be permutated)
+ * @param p prime number for modulo
+ * @param rhs right hand side of the linear system of equations
+ * @param pivot vector with row indexes (permutation)
+ * @return Vector: solution
+ */
 Vector
 modular_backward_substitution(Matrix& R, const int p, Vector& rhs, Vector& pivot)
 {
@@ -22,6 +31,17 @@ modular_backward_substitution(Matrix& R, const int p, Vector& rhs, Vector& pivot
     return sol;
 }
 
+/**
+ * @brief Matrix subsetting function
+ * 
+ * needed for splitting matrix resulting from modular gauss implementation
+ * 
+ * @param m1 number of rows of new matrix 
+ * @param n1 number of columns of new matrix
+ * @param A Matrix to be subset
+ * @param order storage order of the new matrix
+ * @return Matrix subset
+ */
 Matrix
 matrix_subset(int m1, int n1, Matrix& A, StorageOrder order)
 {
@@ -33,7 +53,16 @@ matrix_subset(int m1, int n1, Matrix& A, StorageOrder order)
     }
     return A1;
 }
-
+/**
+ * @brief Vector subsetting function
+ * 
+ * needed for splitting matrix resulting from modular gauss implementation
+ * 
+ * @param index row or column index of interest
+ * @param A Matrix to subset vector from
+ * @param col bool to specify if column or row should be subset
+ * @return Vector subset
+ */
 Vector
 vector_subset(int index, Matrix& A, bool col)
 {
@@ -53,10 +82,11 @@ vector_subset(int index, Matrix& A, bool col)
 
 
 /**
- * @brief Perfoming Gauss Elimination modulo an integer and computing
- * determinant
+ * @brief Gauss Elimination modulo an integer 
+ * 
+ * Transform to a right upper triangular matrix and solving of the system of linear equations
  *
- * @param A Matrix
+ * @param A matrix consisting of Coefficients and right hand side to be solved
  * @param p prime number
  * @return int determinant modulo p
  */
@@ -65,7 +95,7 @@ modularGauss(Matrix& A, const int p)
 {
     // create vector v for pivot of size number of rows of A
     Vector v(A.m);
-    v.init(); // fill with list of the frm {0, 1, 2, ..., m-1}
+    v.init(); // fill list of the form {0, 1, 2, ..., m-1}
 
     for (int i = 0; i < A.m - 1; ++i) { // loop over rwos
 	if (A(v(i), i) == 0) {
@@ -88,14 +118,10 @@ modularGauss(Matrix& A, const int p)
 	// gauss elimination
 	for (int j = i + 1; j < A.m; ++j) { // loop over lower rows
 	    int tmp = A(v(j), i);
-//	    std::cout << "A(j,i)=" << A(v(j), i) << " A(i,i) = " << A(v(i), i)
-//		      << "\n";
 	    for (int k = i; k < A.n; ++k) { // loop over columns
 		A(v(j), k) =
 		  modulo(A(v(j), k) * A(v(i), i) - A(v(i), k) * tmp, p);
 	    }
-	    // std::cout <<"A = \n";
-	    // A.print();
 	}
     }
 
@@ -110,18 +136,20 @@ modularGauss(Matrix& A, const int p)
     std::cout << "pivot vector v = \n";
     v.print();
 
-    Vector test(3);
+	// extract right hand side
     Vector rhs = vector_subset(A.n-1, A, 1);
     cout << "vector rhs = \n";
     rhs.print();
-	// compute solution
+	// extract right upper triangular matrix
     Matrix R = matrix_subset(A.m, A.m, A, StorageOrder::RowMajor);
     std::cout << "R = \n";
     R.print();
 
+	// solve LSE
     Vector sol = modular_backward_substitution(R, p, rhs, v);
     std::cout << "sol: \n";
     sol.print();
+
     // compute modulo at the end
     return modulo(det, p);
 }

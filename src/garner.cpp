@@ -4,7 +4,16 @@
 
 using namespace std;
 
-// array int klasse
+/**
+ * @brief Implementation of Garner's alogorithm 
+ * 
+ * Chinese remainder alogrithm to solve congruence system
+ * 
+ * @param m array of intergers
+ * @param u array of integers
+ * @param size 
+ * @return int 
+ */
 int
 integerCRA(int* m, int* u, size_t const size)
 {

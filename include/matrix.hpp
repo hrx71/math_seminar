@@ -1,5 +1,4 @@
 #include <cassert> /* needed for assert */
-#include <cstddef> /* needed for std::size_t and std::ptrdiff_t */
 #include <iostream>
 
 enum class StorageOrder
@@ -9,8 +8,9 @@ enum class StorageOrder
 };
 
 /**
- * @brief Brief description
- *
+ * @brief Matrix class
+ * 
+ * Struct to store matrices of integers, access and modify their values.
  */
 struct Matrix
 {
@@ -37,6 +37,7 @@ struct Matrix
 	
     }*/
 
+    // provide value (read data)
     const int&
     operator()(int i, int j) const
     {
@@ -44,6 +45,7 @@ struct Matrix
 	return data[i * incRow + j * incCol];
     }
 
+    // access value (write data)
     int&
     operator()(int i, int j)
     {

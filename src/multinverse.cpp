@@ -1,6 +1,14 @@
 #include <numeric>
 #include <iostream>
 using namespace std;
+
+/**
+ * @brief Computation of multiplicative inverse with respect to a prime number
+ * 
+ * @param a imput integer
+ * @param b prime number
+ * @return int multiplicative inverse
+ */
 int 
 multinverse(int a, int b) 
 {
