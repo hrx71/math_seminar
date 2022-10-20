@@ -1,4 +1,4 @@
-#include <funcs.hpp>
+//#include <funcs.hpp>
 #include <iostream>
 #include <vector>
 

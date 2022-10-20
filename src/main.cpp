@@ -1,6 +1,11 @@
 #include <cstddef>
-#include <funcs.hpp>
+#include "../include/funcs.hpp"
 #include <iostream>
+#include "modularGauss.cpp"
+#include "init.cpp"
+#include "modulo.cpp"
+#include "multinverse.cpp"
+#include "garner.cpp"
 
 using namespace std;
 
@@ -154,13 +159,14 @@ main()
 
     cout<<"Initializing the Matrix:\n";
     int modop = 1;
-    int mod = 13;
+    int mod = 19;
     init(A, mod, 0);
     A.print();
     cout <<"\n";
     
     if(modop) {
 	cout<<"mod operation on Matrix:\n";
+	cout<<"mod = "<< mod << "\n";
 	init(A, mod, modop);
 	A.print();
 	cout <<"\n";

@@ -1,5 +1,5 @@
 #include <cstddef>
-#include <funcs.hpp>
+//#include "../include/funcs.hpp"
 #include <iostream>
 
 /**
@@ -97,10 +97,14 @@ modularGauss(Matrix& A, const int p)
     Vector v(A.m);
     v.init(); // fill list of the form {0, 1, 2, ..., m-1}
 
+	int fdet = 1; // corrector for determinant when multiplying a row
+	int sign = 1; // corrector for determinant when swapping rows
+
     for (int i = 0; i < A.m - 1; ++i) { // loop over rwos
 	if (A(v(i), i) == 0) {
 	    // find pivot element: find maximum absolute value in this column
 	    std::cout << "Pivot!\n";
+		sign *= -1; //correct
 	    int maxabs = 0;
 	    int maxptr = 0;
 	    for (int j = i; j < A.m; ++j) {
@@ -118,6 +122,7 @@ modularGauss(Matrix& A, const int p)
 	// gauss elimination
 	for (int j = i + 1; j < A.m; ++j) { // loop over lower rows
 	    int tmp = A(v(j), i);
+		fdet *= A(v(i), i);
 	    for (int k = i; k < A.n; ++k) { // loop over columns
 		A(v(j), k) =
 		  modulo(A(v(j), k) * A(v(i), i) - A(v(i), k) * tmp, p);
@@ -133,6 +138,17 @@ modularGauss(Matrix& A, const int p)
     for (int i = 0; i < A.m; ++i) {
 	det = det * A(v(i), i);
     }
+
+	// correction of the determinant 
+	// source of this method: https://stackoverflow.com/questions/12235110/modulo-of-division-of-two-numbers
+	cout << "mod(det) before = " << modulo(det,p) << "\n";
+	cout << "mod(fdet) = "<< modulo(fdet,p) << "\n";
+	int fdet_inv = multinverse(fdet, p);
+	cout << "inv(fdet) mod p= "<< fdet_inv << "\n";
+	cout << "sign = " << sign << "\n";
+	det = modulo(det*fdet_inv*sign, p);
+	cout << "det atfer correction = " << det << "\n";
+
     std::cout << "pivot vector v = \n";
     v.print();
 
@@ -151,5 +167,5 @@ modularGauss(Matrix& A, const int p)
     sol.print();
 
     // compute modulo at the end
-    return modulo(det, p);
+    return det;
 }

@@ -1,6 +1,6 @@
 #include <iostream>
-#include <matrix.hpp>
-#include <vec.hpp>
+#include "matrix.hpp"
+#include "vec.hpp"
 using namespace std;
 
 int modulo(int a, int b);

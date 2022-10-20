@@ -1,4 +1,4 @@
-#include <funcs.hpp>
+//#include <funcs.hpp>
 
 /**
  * @brief Initialisation function for matrix struct
