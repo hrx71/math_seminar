@@ -1,6 +1,5 @@
-//#include <funcs.hpp>
+#include <funcs.hpp>
 #include <iostream>
-#include <vector>
 
 using namespace std;
 
@@ -15,50 +14,56 @@ using namespace std;
  * @return int 
  */
 int
-integerCRA(int* m, int* u, size_t const size)
+integerCRA(Vector& m,Vector& u)
 {
     // Step 1- Compute the modular multiplicative inverse gamma[?]
-    int* mp = new int[size];
-    int* gamma = new int[size];
-    int* v = new int[size];
-
+    size_t size = m.m-1;
+    Vector mp(size);
+    Vector gamma(size);
+    Vector v(size);
+    
     for (size_t k = 0; k < size - 1; ++k) {
-	mp[k] = m[0];
+	mp(k) = m(0);
 	for (size_t i = 1; i < k + 1; ++i) {
-	    mp[k] *= m[i];
+	    mp(k) *= m(i);
 	}
 	// do 99 % 97 --> 2 modular inverse is the same as 99 mod 97 kongruent 2
 	// mod 97
-	gamma[k] = multinverse(modulo(mp[k], m[k + 1]), m[k + 1]);
+	gamma(k) = multinverse(modulo(mp(k), m(k + 1)), m(k + 1));
+/*	cout<<"k"<<k<<endl;
+	cout<<"gamma(k)"<<gamma(k)<<endl;*/
     }
 
     // Step 2- Compute the radix coefficients
-    v[0] = u[0];
+    v(0) = u(0);
 
     for (size_t k = 1; k < size; ++k) 
     {
-	int tmp = v[k-1];
+	int tmp = v(k-1);
 	for (ptrdiff_t j = k - 2; j > -1; --j) { 
-	    tmp = tmp * m[j] + v[j];
+	    tmp = tmp * m(j) + v(j);
 	}
 	// for the negativ representation
-	v[k] = modulo((u[k] - tmp) * gamma[k-1], m[k]);
+	v(k) = modulo((u(k) - tmp) * gamma(k-1), m(k));
+//	v(k) = (u(k) - tmp) * gamma(k-1);
     }
 
     for (size_t i = 0; i < size; ++i) 
     {
-	cout << "v[i]= " << v[i];
+	int vausgabe = v(i);
+	cout << "v(i)= " << vausgabe;
 	cout << std::endl;
     }
     // mixed radix representation
-    u[size] = v[size];
+    u(size) = 0; 
     for (ptrdiff_t k=size-1; k>-1; --k) 
     {
-	u[size] = u[size]*m[k] + v[k];	
+//	cout<<"k = "<< k <<endl; 
+//	cout<<" u[size] = "<<u(size) <<endl;
+//	cout <<"v[k] ="<<v(k)<<endl;
+	u(size) = u(size)*m(k) + v(k);	
     }
-    return u[size]; 
+    return u(size); 
 
-    delete[] gamma;
-    delete[] mp;
 }
 

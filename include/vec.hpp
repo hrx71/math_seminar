@@ -20,10 +20,10 @@ struct Vector {
    }
 
    // provide value (read data)
-   const std::size_t& operator()(std::size_t i) const {
+/*   const std::size_t& operator()(std::size_t i) const {
       assert(i < m);
       return data[i];
-   }
+   }*/
 
    // access value (write data)
    std::size_t& operator()(std::size_t i) {

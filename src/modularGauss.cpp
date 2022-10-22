@@ -1,7 +1,6 @@
 #include <cstddef>
-//#include "../include/funcs.hpp"
+#include <funcs.hpp>
 #include <iostream>
-
 /**
  * @brief Performs backward substitution considering modulo
  * 
@@ -15,7 +14,7 @@ Vector
 modular_backward_substitution(Matrix& R, const int p, Vector& rhs, Vector& pivot)
 {
     assert(R.m == R.n); // R needs to be quadratic
-    Vector sol(R.n);
+    Vector sol(R.n+1);
 
     for (int i = R.n - 1; i >= 0; --i) {    // loop over rows from back
 	for (int j = i + 1; j < R.n; ++j) { // loop over columns after
@@ -90,7 +89,7 @@ vector_subset(int index, Matrix& A, bool col)
  * @param p prime number
  * @return int determinant modulo p
  */
-int
+Vector
 modularGauss(Matrix& A, const int p)
 {
     // create vector v for pivot of size number of rows of A
@@ -141,31 +140,34 @@ modularGauss(Matrix& A, const int p)
 
 	// correction of the determinant 
 	// source of this method: https://stackoverflow.com/questions/12235110/modulo-of-division-of-two-numbers
-	cout << "mod(det) before = " << modulo(det,p) << "\n";
-	cout << "mod(fdet) = "<< modulo(fdet,p) << "\n";
+	//cout << "mod(det) before = " << modulo(det,p) << "\n";
+	//cout << "mod(fdet) = "<< modulo(fdet,p) << "\n";
 	int fdet_inv = multinverse(fdet, p);
-	cout << "inv(fdet) mod p= "<< fdet_inv << "\n";
-	cout << "sign = " << sign << "\n";
+	//cout << "inv(fdet) mod p= "<< fdet_inv << "\n";
+	//cout << "sign = " << sign << "\n";
 	det = modulo(det*fdet_inv*sign, p);
-	cout << "det atfer correction = " << det << "\n";
+	//cout << "det atfer correction = " << det << "\n";
 
-    std::cout << "pivot vector v = \n";
-    v.print();
+    //std::cout << "pivot vector v = \n";
+    //v.print();
 
 	// extract right hand side
     Vector rhs = vector_subset(A.n-1, A, 1);
-    cout << "vector rhs = \n";
-    rhs.print();
+  //  cout << "vector rhs = \n";
+  //  rhs.print();
 	// extract right upper triangular matrix
     Matrix R = matrix_subset(A.m, A.m, A, StorageOrder::RowMajor);
-    std::cout << "R = \n";
-    R.print();
+   // std::cout << "R = \n";
+   // R.print();
 
 	// solve LSE
     Vector sol = modular_backward_substitution(R, p, rhs, v);
-    std::cout << "sol: \n";
-    sol.print();
-
+    //sol(0) = det;
+    // std::cout << "sol: \n";
+   // sol.print();
+//Vector sol(1);
+//sol(0) = 0;
     // compute modulo at the end
-    return det;
+    sol(sol.m-1) = det;
+    return sol;
 }
