@@ -1,5 +1,5 @@
 #include <cstddef>
-#include <funcs.hpp>
+//#include <funcs.hpp>
 #include <iostream>
 /**
  * @brief Performs backward substitution considering modulo
@@ -89,8 +89,8 @@ vector_subset(int index, Matrix& A, bool col)
  * @param p prime number
  * @return int determinant modulo p
  */
-Vector
-modularGauss(Matrix& A, const int p)
+int
+modular_gauss(Matrix& A, int p)
 {
     // create vector v for pivot of size number of rows of A
     Vector v(A.m);
@@ -128,46 +128,69 @@ modularGauss(Matrix& A, const int p)
 	    }
 	}
     }
-
-    std::cout << "A = \n";
-    A.print();
-
     // compute determinant
     int det = 1;
     for (int i = 0; i < A.m; ++i) {
 	det = det * A(v(i), i);
     }
-
 	// correction of the determinant 
 	// source of this method: https://stackoverflow.com/questions/12235110/modulo-of-division-of-two-numbers
 	//cout << "mod(det) before = " << modulo(det,p) << "\n";
 	//cout << "mod(fdet) = "<< modulo(fdet,p) << "\n";
 	int fdet_inv = multinverse(fdet, p);
+	
 	//cout << "inv(fdet) mod p= "<< fdet_inv << "\n";
 	//cout << "sign = " << sign << "\n";
 	det = modulo(det*fdet_inv*sign, p);
 	//cout << "det atfer correction = " << det << "\n";
-
-    //std::cout << "pivot vector v = \n";
-    //v.print();
-
-	// extract right hand side
-    Vector rhs = vector_subset(A.n-1, A, 1);
-  //  cout << "vector rhs = \n";
-  //  rhs.print();
-	// extract right upper triangular matrix
-    Matrix R = matrix_subset(A.m, A.m, A, StorageOrder::RowMajor);
-   // std::cout << "R = \n";
-   // R.print();
-
-	// solve LSE
-    Vector sol = modular_backward_substitution(R, p, rhs, v);
-    //sol(0) = det;
-    // std::cout << "sol: \n";
-   // sol.print();
-//Vector sol(1);
-//sol(0) = 0;
-    // compute modulo at the end
-    sol(sol.m-1) = det;
-    return sol;
+	
+    return det;
 }
+
+Matrix copy_matrix(Matrix&A){
+	Matrix B(A.m, A.n, StorageOrder::RowMajor);
+	for (int i = 0 ; i < A.m; ++i){
+		for (int j = 0; j < A.n ; ++j){
+			B(i, j ) = A(i,j);
+		}
+	}
+	return B;
+}
+
+Matrix exchange_column(Matrix& A, Vector& rhs, const int index){
+	assert(A.m == rhs.m);
+	Matrix B = copy_matrix(A);
+
+	for (int i = 0; i < A.m;++i){
+		B(i,index) = rhs(i);
+	}
+	return B;
+}
+
+Matrix modular_cramer(Matrix& A, Vector& rhs, const Vector& primes){
+	assert(A.m == A.n);
+	cout << "cramer here \n";
+	Matrix coefficients(primes.m, A.m+1, StorageOrder::RowMajor);
+	for (int i = 0; i < primes.m; ++i){
+		// compute determinants with modular Gauss and p(i) as prime number
+		// first, compute d
+		int p = primes(i);
+		cout << "This is prime number p = " << p <<"\n";
+		A.print();
+		Matrix Acopy1 = copy_matrix(A);
+		coefficients(i, A.m) = modular_gauss(Acopy1, p);
+		Matrix Acopy = copy_matrix(A);
+		cout << "d = " << coefficients(i, A.m) << "\n";
+		// then compute determinant of modified matrices.
+		for (int l = 0; l < A.m; ++l){
+			Matrix B = exchange_column(Acopy, rhs, l);
+			//cout << "adapted Matrix B = \n";
+			//B.print();
+			coefficients(i, l) = modular_gauss(B, p); 
+			cout << "d'("<< l <<") " << coefficients(i, l) << "\n";
+		}
+	}
+	coefficients.print();
+	return coefficients;
+}
+

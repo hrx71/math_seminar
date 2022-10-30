@@ -1,6 +1,7 @@
 // C++ program to print all primes smaller than or equal to
 // n using Sieve of Eratosthenes
-// source: https://www.geeksforgeeks.org/sieve-of-eratosthenes/,https://www.delftstack.com/de/howto/cpp/cpp-write-to-file/
+// sources: https://www.geeksforgeeks.org/sieve-of-eratosthenes/
+// https://www.delftstack.com/de/howto/cpp/cpp-write-to-file/
 #include <bits/stdc++.h>
 #include "../include/vec.hpp"
 #include <fstream>

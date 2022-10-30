@@ -1,4 +1,4 @@
-#include <funcs.hpp>
+//#include <funcs.hpp>
 
 /**
  * @brief Initialisation function for matrix struct
@@ -22,7 +22,7 @@ init(Matrix& M, int mod, bool modop)
      std::cout << " M = \n";
    */
 
-    
+    /*
     M(0, 0) = 3;
     M(1, 0) = 1;
     M(2, 0) = 4;
@@ -47,8 +47,8 @@ init(Matrix& M, int mod, bool modop)
     M(1, 4) = 7;
     M(2, 4) = 2;
     M(3, 4) = 1;
-       
-/*    
+    */
+    
 	M(0, 0) = 22;
 	M(1, 0) = 15;
 	M(2, 0) = -25;
@@ -64,7 +64,7 @@ init(Matrix& M, int mod, bool modop)
 	M(0, 3) = 1;
 	M(1, 3) = -2;
 	M(2, 3) = 34;
-      */
+      
     if (modop) {
 	for (int i = 0; i < M.m; ++i) {
 	    for (int j = 0; j < M.n; ++j) {
