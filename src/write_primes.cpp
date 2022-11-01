@@ -60,11 +60,13 @@ Vector SieveOfEratosthenes(int n)
     
     return primes;
 }
- 
+/* 
 int main()
 {
     int n = pow(2, 16);
     cout << "Prime numbers smaller than or equal to " << n << "\n";
     Vector primes = SieveOfEratosthenes(n);
     return 0;
-}
+    *
+    * */
+//}

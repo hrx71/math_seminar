@@ -20,7 +20,7 @@ multinverse(int a, int b)
  
     while (a > 1) {
         // q is quotient
-        int q = a / b;
+	int q = a / b;
         int t = b;
  
         // m is remainder now, process same as

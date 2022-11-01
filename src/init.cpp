@@ -1,4 +1,4 @@
-//#include <funcs.hpp>
+#include <funcs.hpp>
 
 /**
  * @brief Initialisation function for matrix struct
@@ -61,10 +61,6 @@ init(Matrix& M, int mod, bool modop)
 	M(1, 2) = -10;
 	M(2, 2) = 20;
 
-	M(0, 3) = 1;
-	M(1, 3) = -2;
-	M(2, 3) = 34;
-      
     if (modop) {
 	for (int i = 0; i < M.m; ++i) {
 	    for (int j = 0; j < M.n; ++j) {

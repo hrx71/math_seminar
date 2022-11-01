@@ -1,11 +1,6 @@
 #include <iostream>
 #include "matrix.hpp"
 #include "vec.hpp"
-#include "../src/modulo.cpp"
-#include "../src/multinverse.cpp"
-#include "../src/garner.cpp"
-#include "../src/init.cpp"
-#include "../src/modularGauss.cpp"
 
 using namespace std;
 

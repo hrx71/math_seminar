@@ -1,5 +1,5 @@
-obj/main.o: src/main.cpp include/funcs.hpp include/matrix.hpp \
- include/vec.hpp
-include/funcs.hpp:
-include/matrix.hpp:
-include/vec.hpp:
+obj/main.o: src/main.cpp src/../include/funcs.hpp \
+ src/../include/matrix.hpp src/../include/vec.hpp
+src/../include/funcs.hpp:
+src/../include/matrix.hpp:
+src/../include/vec.hpp:

@@ -30,8 +30,6 @@ integerCRA(Vector& m,Vector& u)
 	// do 99 % 97 --> 2 modular inverse is the same as 99 mod 97 kongruent 2
 	// mod 97
 	gamma(k) = multinverse(modulo(mp(k), m(k + 1)), m(k + 1));
-/*	cout<<"k"<<k<<endl;
-	cout<<"gamma(k)"<<gamma(k)<<endl;*/
     }
 
     // Step 2- Compute the radix coefficients
@@ -45,22 +43,12 @@ integerCRA(Vector& m,Vector& u)
 	}
 	// for the negativ representation
 	v(k) = modulo((u(k) - tmp) * gamma(k-1), m(k));
-//	v(k) = (u(k) - tmp) * gamma(k-1);
     }
 
-    for (size_t i = 0; i < size; ++i) 
-    {
-	int vausgabe = v(i);
-	cout << "v(i)= " << vausgabe;
-	cout << std::endl;
-    }
     // mixed radix representation
     u(size) = 0; 
     for (ptrdiff_t k=size-1; k>-1; --k) 
     {
-//	cout<<"k = "<< k <<endl; 
-//	cout<<" u[size] = "<<u(size) <<endl;
-//	cout <<"v[k] ="<<v(k)<<endl;
 	u(size) = u(size)*m(k) + v(k);	
     }
     return u(size); 
