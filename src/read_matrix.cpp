@@ -2,8 +2,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "../include/vec.hpp"
-#include "../include/matrix.hpp"
+//#include "../include/vec.hpp"
+//#include "../include/matrix.hpp"
 
 using namespace std;
 
@@ -59,16 +59,3 @@ Matrix read_matrix_from_file(string filepath){
     return A;
 }
 
-/*int main(){
-    Matrix mat= read_matrix_from_file("../include/matrix1.txt");
-    for (int i = 0; i < 3; ++i){
-        for (int j = 0; j< 3; ++j){
-            cout << mat[i][j] << " ";
-        }
-        cout << "\n";
-    }
-    cout <<  "A(0,0)+A(0,1) = " << mat[0][0] + mat[0][1] << "\n";
-    cout << "size of mat  = " << mat[1].size();
-    mat.print();
-*/
-//}

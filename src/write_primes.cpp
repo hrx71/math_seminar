@@ -52,7 +52,7 @@ Vector SieveOfEratosthenes(int n)
     if (!file_out.is_open()) {
         cout << "failed to open " << filename << '\n';
     } else {
-        for (int i = nof_p-1; i >= nof_p-200; --i){
+        for (int i = nof_p-1; i >= nof_p-1000; --i){
             file_out << primes(i) << endl;
         }
         cout << "Done Writing!" << endl;

@@ -74,7 +74,6 @@ struct Matrix
             std::cout << "\n";
         }
     }
-
     Matrix(Matrix &P){
         m = P.m; 
         n = P.n; 

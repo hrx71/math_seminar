@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "../include/vec.hpp"
+//#include "../include/vec.hpp"
 
 using namespace std;
 
@@ -13,7 +13,7 @@ using namespace std;
  * @return Vector vector with read-in prime numbers
  */
 
-Vector read_primes(string filepath, int nof_lines) {
+Vector read_vector_from_file(string filepath, int nof_lines) {
 
     Vector primes(nof_lines);
     std::ifstream input(filepath);
