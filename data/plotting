@@ -1,0 +1,5 @@
+clear
+clc
+close all
+
+time1 = load('time1.data');
