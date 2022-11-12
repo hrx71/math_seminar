@@ -1,9 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <funcs.hpp>
 #include <vector>
-//#include "../include/vec.hpp"
-//#include "../include/matrix.hpp"
 
 using namespace std;
 
@@ -35,10 +34,6 @@ vector<string> split( string str, char delimiter )
 
 Matrix read_matrix_from_file(string filepath){
     ifstream input(filepath);
-    //Matrix A(3,3, StorageOrder::RowMajor);
-    //for (int i = 0; i < 3; ++i) {
-    //    input >> A(i,0) >> A(i,1) >> A(i, 2) ;
-    //}
 
     // source: https://stackoverflow.com/questions/7868936/read-file-line-by-line-using-ifstream-in-c
     vector<vector<string>> lines;

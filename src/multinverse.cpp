@@ -29,7 +29,8 @@ multinverse(int a, int b)
  
         // Update y and x
         y = x - q * y;
-        x = t;
+//	cout<<"q*y="<<q*y<<endl;
+	x = t;
     }
  
     // Make x positive

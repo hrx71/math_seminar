@@ -1,4 +1,4 @@
-//#include <funcs.hpp>
+#include <funcs.hpp>
 #include <iostream>
 
 using namespace std;
@@ -18,7 +18,6 @@ integerCRA(Vector& m,Vector& u)
 {
     // Step 1- Compute the modular multiplicative inverse gamma[?]
     size_t size = m.m-1;
-    //cout << size ;
     Vector mp(size);
     Vector gamma(size);
     Vector v(size);
@@ -28,8 +27,6 @@ integerCRA(Vector& m,Vector& u)
 	for (size_t i = 1; i < k + 1; ++i) {
 	    mp(k) *= m(i);
 	}
-	// do 99 % 97 --> 2 modular inverse is the same as 99 mod 97 kongruent 2
-	// mod 97
 	gamma(k) = multinverse(modulo(mp(k), m(k + 1)), m(k + 1));
     }
 

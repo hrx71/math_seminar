@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-//#include "../include/vec.hpp"
+#include <funcs.hpp> 
 
 using namespace std;
 
