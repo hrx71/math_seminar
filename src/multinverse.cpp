@@ -9,19 +9,20 @@ using namespace std;
  * @param b prime number
  * @return int multiplicative inverse
  */
-int 
-multinverse(int a, int b) 
+ptrdiff_t
+multinverse(ptrdiff_t a, size_t b) 
 {
-    int m = b;
-    int y = 0, x = 1;
+    size_t m = b;
+    ptrdiff_t y = 0, x = 1;
  
     if (b == 1)
         return 0;
  
     while (a > 1) {
         // q is quotient
-	int q = a / b;
-        int t = b;
+	ptrdiff_t q = a / b;
+        ptrdiff_t
+         t = b;
  
         // m is remainder now, process same as
         b = a % b, a = t;

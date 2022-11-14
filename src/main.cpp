@@ -1,34 +1,36 @@
 #include <fstream>
-#include <funcs.hpp>
+#include "../include/funcs.hpp"
 #include <iostream>
 #include <string>
-#include <unistd.h>
-#include <walltime.hpp>
+#include <cstddef>
+//#include <unistd.h>
+//#include <walltime.hpp>
 
 using namespace std;
 
 int
 main()
 {
+	cout << sizeof(long int);
     // TESTING//
     //
-    time_dat time_eval;
-    WallTime<double> timer;
+    //time_dat time_eval;
+    //WallTime<double> timer;
     std::string base = "../data/matrix1.txt";
     // cout<<base<<endl;
     for (int r = 1; r < 6; ++r) {
 	// Read Matrix
 	std::string s = std::to_string(r);
 	base.replace(14, 1, s);
-	timer.tic();
+	//timer.tic();
 	Matrix M = read_matrix_from_file(base);
-	time_eval.time_matrix = timer.toc();
+	//time_eval.time_matrix = timer.toc();
 
 	//M.print();
 	// Read rhs
-	timer.tic();
-	// Vector rhs = read_vector_from_file("../data/rhs.txt", M.m);
-	time_eval.time_vector = timer.toc();
+	//timer.tic();
+	Vector rhs = read_vector_from_file("../data/rhs.txt", M.m);
+	//time_eval.time_vector = timer.toc();
 
 	Vector testcases(14);
 	testcases(0) = 1;
@@ -48,12 +50,13 @@ main()
 
 	// Read primes in
 //	Vector primes = read_vector_from_file("../data/primes_small.txt", 7);
-	Vector primes_big = read_vector_from_file("../data/primes_big.txt", 100);
+	//Vector primes_big = read_vector_from_file("../include/primes32bit.txt", 100);
 
-	std::string base_time = "../data/time1.dat";
-	base_time.replace(12, 1, s);
-	cout << base_time << endl;
-	ofstream fout(base_time);
+	Vector primes_big = read_vector_from_file("../include/primes32bit.txt", 100);
+	//std::string base_time = "../data/time1.dat";
+	//base_time.replace(12, 1, s);
+	//cout << base_time << endl;
+	//ofstream fout(base_time);
 
 	for (int i = 0; i < 14; ++i) {
 	    int size = testcases(i) + 1;
@@ -68,6 +71,7 @@ main()
 	    }
 
 	    mpz_t prodprim;
+
 	    mpz_init_set_ui(prodprim, 1);
 
 	    p(size - 1) = 1;
@@ -85,15 +89,15 @@ main()
 
 	    cout << "Anwendung als Determinantenbrechnung" << endl;
 
-	    timer.tic();
+	    //timer.tic();
 	    Vector det_congruence_system = modular_determinant(M, p);
-	    time_eval.time_modgauss = timer.toc();
+	    //time_eval.time_modgauss = timer.toc();
 
 	    int d = integerCRA(p, det_congruence_system);
-	    time_eval.time_garner = timer.toc() - time_eval.time_modgauss;
+	    //time_eval.time_garner = timer.toc() - time_eval.time_modgauss;
 
 	    d = to_symmetric(d, p(size - 1));
-	    time_eval.time_comp = timer.toc();
+	    //time_eval.time_comp = timer.toc();
 	    cout << endl << "determinant: " << d << endl;
 
 	    //--Working with gnu-gmp
@@ -101,9 +105,9 @@ main()
 	    mpz_t result;
 	    mpz_init(result);
 
-	    timer.tic();
+	    //timer.tic();
 	    integerCRA_mp(result, p, det_congruence_system);
-	    time_eval.time_garner_gmp = timer.toc();
+	    //time_eval.time_garner_gmp = timer.toc();
 
 	    cout << "determinant_gmp= ";
 	    to_symmetric_mp(result, prodprim);
@@ -115,19 +119,19 @@ main()
 	    mpz_clear(prodprim);
 
 	    // Writing time to file
-	    cout << endl << "Writing to file started" << endl;
+	    /*cout << endl << "Writing to file started" << endl;
 	    fout << time_eval.time_matrix << ' ' << time_eval.time_vector << ' '
 		 << time_eval.time_modgauss << ' ' << time_eval.time_garner
 		 << ' ' << time_eval.time_garner_gmp << ' '
 		 << time_eval.time_comp << endl;
 	    fout << endl;
-	    cout << "Writing to file finished" << endl;
+	    cout << "Writing to file finished" << endl;*/
 	}
-	fout.close();
+	//fout.close();
     }
     return (0);
 }
-// ODO:
+// TODO:
 /*
 
 Irgendwannn:

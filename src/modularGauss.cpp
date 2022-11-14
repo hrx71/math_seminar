@@ -1,5 +1,5 @@
 #include <cstddef>
-#include <funcs.hpp>
+using namespace std;
 
 /**
  * @brief Gauss Elimination modulo a prime
@@ -8,54 +8,54 @@
  *
  * @param A matrix consisting of Coefficients and right hand side to be solved
  * @param p prime number
- * @return int determinant modulo p
+ * @return size_t determinant modulo p
  */
-int
-modular_gauss(Matrix& A, int p)
+ptrdiff_t
+modular_gauss(Matrix& A, size_t p)
 {
     // create vector v for pivot of size number of rows of A
     Vector v(A.m);
     v.init(); // fill list of the form {0, 1, 2, ..., m-1}
 
     // Calculate the Matrix modulo
-    for (int i = 0; i < A.m; ++i) {
-	for (int j = 0; j < A.n; ++j) {
-	    A(i, j) = modulo(A(i, j), p);
-	}
+    for (size_t i = 0; i < A.m; ++i) {
+		for (size_t j = 0; j < A.n; ++j) {
+			A(i, j) = modulo(A(i, j), p);
+		}
     }
    // cout << "Matrix modulo p: " << p << endl;
    // A.print();
-    int fdet = 1; // corrector for determinant when multiplying a row
+    ptrdiff_t fdet = 1; // corrector for determinant when multiplying a row
     int sign = 1; // corrector for determinant when swapping rows
-    int det = 1;
+    ptrdiff_t det = 1;
 
-    for (int i = 0; i < A.m - 1; ++i) { // loop over rwos
+    for (size_t i = 0; i < A.m - 1; ++i) { // loop over rwos
 	if (A(v(i), i) == 0) {
 	    // find pivot element: find maximum absolute value in this column
 	    sign *= -1; // correction of determinant
-	    int maxabs = 0;
-	    int maxptr = 0;
-	    for (int j = i; j < A.m; ++j) {
+	    ptrdiff_t maxabs = 0;
+	    size_t maxptr = 0;
+	    for (size_t j = i; j < A.m; ++j) {
 		if (abs(A(v(j), i)) > maxabs) {
 		    maxabs = A(v(j), i);
 		    maxptr = j;
 		}
 	    }
 	    // swap pivot vector
-	    int tmp = v(i);
+	    size_t tmp = v(i);
 	    v(i) = v(maxptr);
 	    v(maxptr) = tmp;
 	}
 
 	// gauss elimination
-	for (int j = i + 1; j < A.m; ++j) { // loop over lower rows
-	    int tmp = A(v(j), i);
+	for (size_t j = i + 1; j < A.m; ++j) { // loop over lower rows
+	    size_t tmp = A(v(j), i);
 	    if (!(A(v(i), i))) {
 		return 0;
 	    }
 	    fdet *= A(v(i), i);
 	    fdet = modulo(fdet, p);
-	    for (int k = i; k < A.n; ++k) { // loop over columns
+	    for (size_t k = i; k < A.n; ++k) { // loop over columns
 		A(v(j), k) =
 		  modulo(A(v(j), k) * A(v(i), i) - A(v(i), k) * tmp, p);
 	    }
@@ -69,7 +69,7 @@ modular_gauss(Matrix& A, int p)
 //    cout << "gauss matrix for p=:" << p << endl;
 //    A.print();
     //  compute determinant
-    for (int i = 0; i < A.m; ++i) {
+    for (size_t i = 0; i < A.m; ++i) {
 	det = modulo(det * A(v(i), i),p);
     }
     // correction of the determinant
@@ -78,7 +78,7 @@ modular_gauss(Matrix& A, int p)
     //	cout<<"det ="<<det<<endl;
     // cout<<"p="<<p<<endl;
     
-    int fdet_inv = multinverse(fdet, p); // compute inverse value to avoid dividing
+    size_t fdet_inv = multinverse(fdet, p); // compute inverse value to avoid dividing
     //cout<<"fdet_inv"<<fdet_inv<<endl;
     det = modulo(det * fdet_inv * sign, p);
     cout << "det for p= " << p << " det = " << det << endl;
@@ -96,8 +96,8 @@ Matrix
 copy_matrix(Matrix& A)
 {
     Matrix B(A.m, A.n, StorageOrder::RowMajor);
-    for (int i = 0; i < A.m; ++i) {
-	for (int j = 0; j < A.n; ++j) {
+    for (size_t i = 0; i < A.m; ++i) {
+	for (size_t j = 0; j < A.n; ++j) {
 	    B(i, j) = A(i, j);
 	}
     }
@@ -113,12 +113,12 @@ copy_matrix(Matrix& A)
  * @return Matrix
  */
 Matrix
-exchange_column(Matrix& A, Vector& rhs, const int index)
+exchange_column(Matrix& A, Vector& rhs, const size_t index)
 {
     assert(A.m == rhs.m);
     Matrix B = copy_matrix(A);
 
-    for (int i = 0; i < A.m; ++i) {
+    for (size_t i = 0; i < A.m; ++i) {
 	B(i, index) = rhs(i);
     }
     return B;
@@ -139,10 +139,10 @@ modular_cramer(Matrix& A, Vector& rhs, const Vector& primes)
     assert(A.m == A.n);
     cout << "Cramer rule begins\n";
     Matrix coefficients(A.m + 1, primes.m - 1, StorageOrder::RowMajor);
-    for (int i = 0; i < primes.m - 1; ++i) {
+    for (size_t i = 0; i < primes.m - 1; ++i) {
 	// compute determinants with modular Gauss and p(i) as prime number
 	// first, compute d
-	int p = primes(i);
+	size_t p = primes(i);
 	cout << "This is prime number p = " << p << "\n";
 	A.print();
 	Matrix Acopy = copy_matrix(A);
@@ -150,7 +150,7 @@ modular_cramer(Matrix& A, Vector& rhs, const Vector& primes)
 
 	coefficients(A.m, i) = modular_gauss(Acopy, p);
 	// then compute determinant of modified matrices.
-	for (int l = 0; l < A.m; ++l) {
+	for (size_t l = 0; l < A.m; ++l) {
 	    Matrix B = exchange_column(A, rhs, l);
 	    coefficients(l, i) = modular_gauss(B, p);
 	}
@@ -181,10 +181,10 @@ modular_determinant(Matrix& A, const Vector& primes)
 {
     assert(A.m == A.n);
     Vector coefficients(primes.m - 1);
-    for (int i = 0; i < primes.m - 1; ++i) {
+    for (size_t i = 0; i < primes.m - 1; ++i) {
 	// compute determinants with modular Gauss and p(i) as prime number
 	// first, compute d
-	int p = primes(i);
+	size_t p = primes(i);
 	//		cout << "This is prime number p = " << p << "\n";
 	//		A.print();
 	Matrix Acopy = copy_matrix(A);

@@ -1,18 +1,20 @@
 #include <cassert> /* needed for assert */
 #include <iostream>
 
+using namespace std;
+
 /**
  * @brief Vector class
  * 
- * struct to store vectors of integers, access and modify their values.
+ * struct to store vectors of size_t, access and modify their values.
  */
 struct Vector {
-   const int m; /* number of rows */
-   int* data;
+   const size_t m; /* number of rows */
+   ptrdiff_t* data;
 
-   Vector(int m) :
+   Vector(size_t m) :
          m(m), 
-         data(new int[m]) {
+         data(new ptrdiff_t[m]) {
    }
 
    ~Vector() {
@@ -20,25 +22,25 @@ struct Vector {
    }
 
    // provide value (read data)
-   const int& operator()(int i) const {
+   const ptrdiff_t& operator()(size_t i) const {
       assert(i < m);
       return data[i];
    }
 
    // access value (write data)
-   int& operator()(int i) {
+   ptrdiff_t& operator()(size_t i) {
       assert(i < m);
       return data[i];
    }
 
    void init() {
-      for (int i = 0; i < m; ++i) {
+      for (size_t i = 0; i < m; ++i) {
         data[i] = i;
       }
    }
 
    void print() {
-      for (int i = 0; i < m; ++i) {
+      for (size_t i = 0; i < m; ++i) {
         std::cout << "  ";
         std::cout << data[i] << "   ";
         std::cout << "\n";
