@@ -1,4 +1,4 @@
-#include <funcs.hpp>
+//#include "../include/funcs.hpp"
 #include <iostream>
 
 using namespace std;
@@ -13,7 +13,7 @@ using namespace std;
  * @param size 
  * @return int 
  */
-int
+ptrdiff_t
 integerCRA(Vector& m,Vector& u)
 {
     // Step 1- Compute the modular multiplicative inverse gamma[?]
@@ -35,7 +35,7 @@ integerCRA(Vector& m,Vector& u)
 
     for (size_t k = 1; k < size; ++k) 
     {
-	int tmp = v(k-1);
+	ptrdiff_t tmp = v(k-1);
 	for (ptrdiff_t j = k - 2; j > -1; --j) { 
 	    tmp = tmp * m(j) + v(j);
 	}
@@ -44,7 +44,7 @@ integerCRA(Vector& m,Vector& u)
     }
 
     // mixed radix representation
-    int sol = 0; 
+    ptrdiff_t sol = 0; 
     for (ptrdiff_t k=size-1; k>-1; --k) 
     {
 	sol = sol*m(k) + v(k);	
