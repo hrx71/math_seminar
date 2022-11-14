@@ -13,8 +13,13 @@ using namespace std;
  *
  * Struct to store matrices of size_tegers, access and modify their values.
  */
-
-
+struct Matrix
+{
+    size_t m; /* number of rows */
+    size_t n; /* number of columns */
+    std::ptrdiff_t incRow;
+    std::ptrdiff_t incCol;
+    ptrdiff_t *data;
 
     Matrix(size_t m, size_t n, StorageOrder order)
         : m(m), n(n), incRow(order == StorageOrder::ColMajor ? 1 : n), incCol(order == StorageOrder::RowMajor ? 1 : m), data(new ptrdiff_t[m * n])
