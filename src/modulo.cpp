@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <funcs.hpp>
 /**
  * @brief Modulo that can handle negative input
  *
@@ -6,13 +7,13 @@
  * @param p prime number
  * @return int residuum
  */
-size_t modulo(ptrdiff_t a, size_t p)
+size_t modulo(ptrdiff_t a, ptrdiff_t p)
 {
-    int r = (a % p + p) % p;
+    ptrdiff_t r = (a % p + p) % p;
     return r;
 }
 
-size_t modulo_mp(mpz_t a, size_t p){
+size_t modulo_mp(mpz_t a, ptrdiff_t p){
     // result = (a % p + p) % p;
     mpz_t tmp;
     mpz_init(tmp);

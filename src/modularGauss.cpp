@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <funcs.hpp>
 using namespace std;
 
 /**
@@ -49,7 +50,7 @@ modular_gauss(Matrix& A, size_t p)
 
 	// gauss elimination
 	for (size_t j = i + 1; j < A.m; ++j) { // loop over lower rows
-	    size_t tmp = A(v(j), i);
+	    ptrdiff_t tmp = A(v(j), i);
 	    if (!(A(v(i), i))) {
 		return 0;
 	    }
@@ -177,7 +178,7 @@ modular_cramer(Matrix& A, Vector& rhs, const Vector& primes)
  * @return Vector
  */
 Vector
-modular_determinant(Matrix& A, const Vector& primes)
+modular_determinant(Matrix& A, const Vector& primes, bool questionisregular)
 {
     assert(A.m == A.n);
     Vector coefficients(primes.m - 1);
@@ -190,9 +191,19 @@ modular_determinant(Matrix& A, const Vector& primes)
 	Matrix Acopy = copy_matrix(A);
 	// Matrix Acopy1 = copy_matrix(A);
 
+
 	coefficients(i) = modular_gauss(Acopy, p);
+	if(questionisregular) {
+	    if(coefficients(i) !=0) {
+		cout << "Matrix is regular!"<<endl;
+		return 0;
+	    }
+	}
     }
     /*	cout << "coefficient vector:" << endl;
 	    coefficients.print();*/
+    if(questionisregular) {
+	cout<< "Matrix is singular!"<<endl;
+    }
     return coefficients;
 }

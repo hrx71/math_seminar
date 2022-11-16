@@ -1,5 +1,5 @@
 #include <fstream>
-#include "../include/funcs.hpp"
+#include <funcs.hpp>
 #include <iostream>
 #include <string>
 #include <cstddef>
@@ -18,7 +18,7 @@ main()
     //WallTime<double> timer;
     std::string base = "../data/matrix1.txt";
     // cout<<base<<endl;
-    for (int r = 1; r < 6; ++r) {
+    for (int r = 1; r < 7; ++r) {
 	// Read Matrix
 	std::string s = std::to_string(r);
 	base.replace(14, 1, s);
@@ -52,7 +52,7 @@ main()
 //	Vector primes = read_vector_from_file("../data/primes_small.txt", 7);
 	//Vector primes_big = read_vector_from_file("../include/primes32bit.txt", 100);
 
-	Vector primes_big = read_vector_from_file("../include/primes32bit.txt", 100);
+	Vector primes_big = read_vector_from_file("../include/primes64bit.txt", 100);
 	//std::string base_time = "../data/time1.dat";
 	//base_time.replace(12, 1, s);
 	//cout << base_time << endl;
@@ -88,11 +88,12 @@ main()
 	    cout << endl;
 
 	    cout << "Anwendung als Determinantenbrechnung" << endl;
+	    bool questionregular = 1;
 
 	    //timer.tic();
-	    Vector det_congruence_system = modular_determinant(M, p);
+	    Vector det_congruence_system = modular_determinant(M, p, questionregular);
 	    //time_eval.time_modgauss = timer.toc();
-
+	    if(!questionregular) {
 	    int d = integerCRA(p, det_congruence_system);
 	    //time_eval.time_garner = timer.toc() - time_eval.time_modgauss;
 
@@ -128,6 +129,7 @@ main()
 	    cout << "Writing to file finished" << endl;*/
 	}
 	//fout.close();
+    }
     }
     return (0);
 }

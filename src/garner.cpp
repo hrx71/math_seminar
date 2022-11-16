@@ -1,4 +1,4 @@
-//#include "../include/funcs.hpp"
+#include <funcs.hpp>
 #include <iostream>
 
 using namespace std;

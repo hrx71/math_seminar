@@ -69,7 +69,7 @@ Vector SieveOfEratosthenes(size_t n)
     
     return primes;
 }
- 
+/* 
 int main()
 {
     //size_t n = pow(2, 32);
@@ -78,4 +78,4 @@ int main()
     //cout << "Prime numbers smaller than or equal to " << n << "\n";
     Vector primes = SieveOfEratosthenes(n);
     return 0;
-}
+}*/
