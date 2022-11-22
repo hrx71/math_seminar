@@ -13,7 +13,7 @@ using namespace std;
  * @param size 
  * @return int 
  */
-void integerCRA_mp(mpz_t sol_mp, Vector &m, Vector &u){
+void integerCRA_mp_threaded(mpz_t sol_mp, Vector &m, Vector<std::future> &u){
     // Step 1- Compute the modular multiplicative inverse gamma[?]
     size_t size = m.m - 1;
     mpz_t mp_gmp[size];
@@ -36,7 +36,6 @@ void integerCRA_mp(mpz_t sol_mp, Vector &m, Vector &u){
         }
 	gamma(k) = multinverse(modulo_mp(mp_gmp[k], m(k + 1)), m(k + 1));
     }
-
     // Step 2- Compute the radix coefficients
     v(0) = u(0);
     mpz_t zw;
@@ -73,6 +72,9 @@ void integerCRA_mp(mpz_t sol_mp, Vector &m, Vector &u){
 
 	v(k) = modulo_mp(zw,m(k));
     }
+    cout <<"------->  coefficients:" << endl;
+    v.print();
+    cout<<endl;
 
     // mixed radix representation
     int sol = 0;

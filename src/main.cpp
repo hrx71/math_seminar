@@ -11,14 +11,12 @@ using namespace std;
 int
 main()
 {
-	cout << sizeof(long int);
     // TESTING//
-    //
     //time_dat time_eval;
     //WallTime<double> timer;
     std::string base = "../data/matrix1.txt";
     // cout<<base<<endl;
-    for (int r = 1; r < 7; ++r) {
+    for (int r = 6; r < 7; ++r) {
 	// Read Matrix
 	std::string s = std::to_string(r);
 	base.replace(14, 1, s);
@@ -33,26 +31,26 @@ main()
 	//time_eval.time_vector = timer.toc();
 
 	Vector testcases(14);
-	testcases(0) = 1;
-	testcases(1) = 2;
-	testcases(2) = 3;
-	testcases(3) = 4;
-	testcases(4) = 5;
-	testcases(5) = 10;
-	testcases(6) = 15;
+	testcases(0) = 13;
+	testcases(1) = 14;
+	testcases(2) = 15;
+	testcases(3) = 16;
+	testcases(4) = 17;
+	testcases(5) = 18;
+	testcases(6) = 19;
 	testcases(7) = 20;
-	testcases(8) = 25;
-	testcases(9) = 30;
-	testcases(10) = 35;
-	testcases(11) = 40;
-	testcases(12) = 50;
-	testcases(13) = 60;
+	testcases(8) = 21;
+	testcases(9) = 22;
+	testcases(10) = 28;
+	testcases(11) = 29;
+	testcases(12) = 30;
+	testcases(13) = 31;
 
 	// Read primes in
 //	Vector primes = read_vector_from_file("../data/primes_small.txt", 7);
 	//Vector primes_big = read_vector_from_file("../include/primes32bit.txt", 100);
 
-	Vector primes_big = read_vector_from_file("../include/primes64bit.txt", 100);
+	Vector primes_big = read_vector_from_file("../include/primes32bit.txt", 100);
 	//std::string base_time = "../data/time1.dat";
 	//base_time.replace(12, 1, s);
 	//cout << base_time << endl;
@@ -63,11 +61,7 @@ main()
 
 	    Vector p(size);
 	    for (int j = 0; j < size - 1; ++j) {
-		//	if(i<3) {
-		//		    p(j) = primes(j);
-		//	} else {
 		p(j) = primes_big(j);
-		//	}
 	    }
 
 	    mpz_t prodprim;
@@ -86,9 +80,11 @@ main()
 		 << "Used prime numbers, last one is the product" << endl;
 	    p.print();
 	    cout << endl;
-
+	    cout <<"prodprim:"<<endl;
+	    mpz_out_str(stdout, 10, prodprim);
+	    cout <<endl;
 	    cout << "Anwendung als Determinantenbrechnung" << endl;
-	    bool questionregular = 1;
+	    bool questionregular = 0;
 
 	    //timer.tic();
 	    Vector det_congruence_system = modular_determinant(M, p, questionregular);

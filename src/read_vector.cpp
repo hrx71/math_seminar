@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <funcs.hpp> 
+//#include <funcs.hpp> 
 
 using namespace std;
 

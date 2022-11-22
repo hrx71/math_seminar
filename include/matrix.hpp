@@ -75,12 +75,12 @@ struct Matrix
             std::cout << "\n";
         }
     }
-    Matrix(Matrix &P){
+    /*Matrix(Matrix &P){
         m = P.m; 
         n = P.n; 
         incRow = P.incRow;
         incCol = P.incCol;
         data = new ptrdiff_t;
         *data = *P.data;
-    }
+    }*/
 };

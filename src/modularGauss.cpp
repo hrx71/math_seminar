@@ -1,5 +1,8 @@
 #include <cstddef>
-#include <funcs.hpp>
+//#include <funcs.hpp>
+#include "modulo.cpp"
+#include "multinverse.cpp"
+#include <thread>
 using namespace std;
 
 /**
@@ -20,14 +23,14 @@ modular_gauss(Matrix& A, size_t p)
 
     // Calculate the Matrix modulo
     for (size_t i = 0; i < A.m; ++i) {
-		for (size_t j = 0; j < A.n; ++j) {
-			A(i, j) = modulo(A(i, j), p);
-		}
+	for (size_t j = 0; j < A.n; ++j) {
+	    A(i, j) = modulo(A(i, j), p);
+	}
     }
-   // cout << "Matrix modulo p: " << p << endl;
-   // A.print();
+    // cout << "Matrix modulo p: " << p << endl;
+    // A.print();
     ptrdiff_t fdet = 1; // corrector for determinant when multiplying a row
-    int sign = 1; // corrector for determinant when swapping rows
+    int sign = 1;	// corrector for determinant when swapping rows
     ptrdiff_t det = 1;
 
     for (size_t i = 0; i < A.m - 1; ++i) { // loop over rwos
@@ -60,28 +63,32 @@ modular_gauss(Matrix& A, size_t p)
 		A(v(j), k) =
 		  modulo(A(v(j), k) * A(v(i), i) - A(v(i), k) * tmp, p);
 	    }
-//	    cout << endl;
-//	    cout << "i=" << i << " "
-//		 << "j=" << j << endl;
-//	    A.print();
-//	    cout << endl;
+	    //	    cout << endl;
+	    //	    cout << "i=" << i << " "
+	    //		 << "j=" << j << endl;
+	    //	    A.print();
+	    //	    cout << endl;
 	}
     }
-//    cout << "gauss matrix for p=:" << p << endl;
-//    A.print();
+    // cout<<"here after gauss"<<endl;
+    /*cout << "gauss matrix for p=:" << p << endl;
+    A.print();*/
     //  compute determinant
     for (size_t i = 0; i < A.m; ++i) {
-	det = modulo(det * A(v(i), i),p);
+	det = modulo(det * A(v(i), i), p);
     }
     // correction of the determinant
     // source of this method:
     // https://stackoverflow.com/questions/12235110/modulo-of-division-of-two-numbers
     //	cout<<"det ="<<det<<endl;
     // cout<<"p="<<p<<endl;
-    
-    size_t fdet_inv = multinverse(fdet, p); // compute inverse value to avoid dividing
-    //cout<<"fdet_inv"<<fdet_inv<<endl;
+    // cout<<"before multinverse"<<endl;
+
+    size_t fdet_inv =
+      multinverse(fdet, p); // compute inverse value to avoid dividing
     det = modulo(det * fdet_inv * sign, p);
+    std::thread::id this_id = std::this_thread::get_id();
+    cout << "Thread: " << this_id << endl;
     cout << "det for p= " << p << " det = " << det << endl;
     // cout<<"fdet_inv"<<fdet_inv<<endl;
     return det;
@@ -191,19 +198,53 @@ modular_determinant(Matrix& A, const Vector& primes, bool questionisregular)
 	Matrix Acopy = copy_matrix(A);
 	// Matrix Acopy1 = copy_matrix(A);
 
-
 	coefficients(i) = modular_gauss(Acopy, p);
-	if(questionisregular) {
-	    if(coefficients(i) !=0) {
-		cout << "Matrix is regular!"<<endl;
-		return 0;
+	if (questionisregular) {
+	    if (coefficients(i) != 0) {
+		cout << "Matrix is regular!" << endl;
+		break;
 	    }
 	}
     }
     /*	cout << "coefficient vector:" << endl;
 	    coefficients.print();*/
-    if(questionisregular) {
-	cout<< "Matrix is singular!"<<endl;
+    if (questionisregular) {
+	cout << "Matrix is singular!" << endl;
     }
     return coefficients;
 }
+
+size_t
+modular_determinant_thread(Matrix& A, const size_t& p)
+{
+
+    assert(A.m == A.n);
+    Matrix Acopy = copy_matrix(A);
+    size_t coefficients = modular_gauss(Acopy, p);
+    return coefficients;
+}
+/*
+size_t
+modular_determinant_thread(Matrix A,
+			   const size_t primes,
+			   bool questionisregular)
+{
+
+    cout<<"here on mod_det"<<endl;
+    assert(A.m == A.n);
+    size_t coefficients;
+    // compute determinants with modular Gauss and p(i) as prime number
+    // first, compute d
+    size_t p = primes;
+    //		cout << "This is prime number p = " << p << "\n";
+    //		A.print();
+ //   Matrix Acopy = copy_matrix(A);
+    // Matrix Acopy1 = copy_matrix(A);
+
+    cout<<"after mod_gauss"<<endl;
+
+	cout << "coefficient vector:" << endl;
+	coefficients.print();
+    size_t coefficients = 36972;
+return coefficients;
+}*/

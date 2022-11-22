@@ -17,12 +17,11 @@ multinverse(ptrdiff_t a, size_t b)
  
     if (b == 1)
         return 0;
- 
+
     while (a > 1) {
         // q is quotient
 	ptrdiff_t q = a / b;
-        ptrdiff_t
-         t = b;
+        ptrdiff_t t = b;
  
         // m is remainder now, process same as
         b = a % b, a = t;
@@ -31,6 +30,7 @@ multinverse(ptrdiff_t a, size_t b)
         // Update y and x
         y = x - q * y;
 //	cout<<"q*y="<<q*y<<endl;
+//	cout<<"x="<<x<<endl;
 	x = t;
     }
  

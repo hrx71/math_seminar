@@ -1,5 +1,6 @@
 #include <stdlib.h>
-#include <funcs.hpp>
+#include <gmpxx.h>
+//#include <funcs.hpp>
 /**
  * @brief Modulo that can handle negative input
  *
@@ -29,7 +30,7 @@ size_t modulo_mp(mpz_t a, ptrdiff_t p){
     mpz_clear(tmp2);
 }
 
-ptrdiff_t to_symmetric(size_t a, size_t p)
+/*ptrdiff_t to_symmetric(size_t a, size_t p)
 {
     int r = (a % p + p) % p;
     if (r > p / 2)
@@ -38,7 +39,7 @@ ptrdiff_t to_symmetric(size_t a, size_t p)
     }
     return r;
 }
-
+*/
 void to_symmetric_mp(mpz_t a,mpz_t  prodprim)
 
 {
