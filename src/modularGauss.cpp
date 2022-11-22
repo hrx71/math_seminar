@@ -1,8 +1,5 @@
 #include <cstddef>
 //#include <funcs.hpp>
-#include "modulo.cpp"
-#include "multinverse.cpp"
-#include <thread>
 using namespace std;
 
 /**
@@ -214,37 +211,73 @@ modular_determinant(Matrix& A, const Vector& primes, bool questionisregular)
     return coefficients;
 }
 
-size_t
-modular_determinant_thread(Matrix& A, const size_t& p)
-{
 
-    assert(A.m == A.n);
-    Matrix Acopy = copy_matrix(A);
-    size_t coefficients = modular_gauss(Acopy, p);
-    return coefficients;
+/*Vector
+modular_determinant_thread(Matrix &A, const Vector &primes, bool questionisregular)
+{
+	assert(A.m == A.n);
+	Vector coefficients(primes.m - 1);
+
+	// get number of possible threads
+	int nof_threads = thread::hardware_concurrency();
+	vector<thread> threads(nof_threads);
+	// create vector of threads
+	// vector<thread> threads(nof_threads);
+	cout << primes.m << endl;
+
+	for (size_t i = 0; i < primes.m - 1; i = i + nof_threads)
+	{
+		cout << i << endl;
+		
+		int limit;
+		if ((i + 1) * nof_threads > primes.m)
+		{
+			limit = primes.m - nof_threads * i;
+		}
+		else
+		{
+			limit = nof_threads;
+		}
+		for (int index = 0; index < limit; ++index)
+		{
+			size_t p = primes(i + index);
+			threads[index] = std::thread([index, i, p]()
+										 { cout << "This thread uses prime number with index " << i << "! working on p = " << p << "\n"; });
+		}
+		
+		// first nof_threads coefficients available
+		// 
+	}
+	for (auto &t : threads)
+		{
+			if (t.joinable())
+				t.join();
+		}
+	
+	// compute determinants with modular Gauss and p(i) as prime number
+	// first, compute d
+	size_t p = primes(i);
+	//		cout << "This is prime number p = " << p << "\n";
+	//		A.print();
+	Matrix Acopy = copy_matrix(A);
+	// Matrix Acopy1 = copy_matrix(A);
+
+	coefficients(i) = modular_gauss(Acopy, p);
+	if (questionisregular)
+	{
+		if (coefficients(i) != 0)
+		{
+			cout << "Matrix is regular!" << endl;
+			return 0;
+		}
+	}
+if (questionisregular)
+{
+	cout << "Matrix is singular!" << endl;
 }
-/*
-size_t
-modular_determinant_thread(Matrix A,
-			   const size_t primes,
-			   bool questionisregular)
-{
 
-    cout<<"here on mod_det"<<endl;
-    assert(A.m == A.n);
-    size_t coefficients;
-    // compute determinants with modular Gauss and p(i) as prime number
-    // first, compute d
-    size_t p = primes;
-    //		cout << "This is prime number p = " << p << "\n";
-    //		A.print();
- //   Matrix Acopy = copy_matrix(A);
-    // Matrix Acopy1 = copy_matrix(A);
+	// join threads
 
-    cout<<"after mod_gauss"<<endl;
-
-	cout << "coefficient vector:" << endl;
-	coefficients.print();
-    size_t coefficients = 36972;
-return coefficients;
-}*/
+	return coefficients;
+}
+*/
