@@ -1,4 +1,7 @@
 #include <cstddef>
+#include <thread>
+#include "modulo.cpp"
+#include "multinverse.cpp"
 //#include <funcs.hpp>
 using namespace std;
 
@@ -211,6 +214,16 @@ modular_determinant(Matrix& A, const Vector& primes, bool questionisregular)
     return coefficients;
 }
 
+size_t
+modular_determinant_thread(Matrix& A, const size_t& p)
+{
+
+    assert(A.m == A.n);
+    Matrix Acopy = copy_matrix(A);
+    size_t coefficients = modular_gauss(Acopy, p);
+    return coefficients;
+}
+
 
 /*Vector
 modular_determinant_thread(Matrix &A, const Vector &primes, bool questionisregular)
@@ -279,5 +292,5 @@ if (questionisregular)
 	// join threads
 
 	return coefficients;
-}
-*/
+}*/
+
