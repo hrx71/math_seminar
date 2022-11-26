@@ -15,7 +15,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
-
+#include <chrono>
 using namespace std;
 template<typename T>
 struct ThreadPool
@@ -97,146 +97,134 @@ struct ThreadPool
 int
 main()
 {
-    std::string base = "../data/matrix6.txt";
+    std::string base = "../data/matrix2.txt";
     Matrix M = read_matrix_from_file(base);
     std::vector<std::future<int>> results;
 
-    //   int nof_threads = thread::hardware_concurrency() - 1;
-    ThreadPool<int> pool(1);
+    int nof_threads = thread::hardware_concurrency();
+    cout<<"nof="<<nof_threads<<endl;
+    ThreadPool<int> pool(nof_threads);
 
-    int size = 100;
+    size_t nof_jobs = 20;
+    size_t nof_checks = 20;
+    size_t nord = nof_checks;
+    Vector p = read_vector_from_file("../include/primes32bit.txt", nof_jobs);
 
-    Vector p = read_vector_from_file("../include/primes32bit.txt", size);
+    Vector v(nof_checks); // need some check
+    Vector gamma(nof_checks);
+    mpz_t mp_gmp[nof_checks];
+    
+    for (size_t i = 0; i < nof_checks; ++i) {
+	mpz_init_set_ui(mp_gmp[i], 0);
+    }
 
+    std::cout << "Job returned :" << endl;
+    for (size_t i = 0; i < nof_jobs; ++i) {
+	results.emplace(results.begin() + i, pool.submit([&, i]() -> size_t {
+	size_t res =  modular_determinant_thread(M, p(i));
+	cout <<"res="<<res<<endl;
+	return	res;
+	}));
+    }
+
+    //-----------------------------------------------------------------
+    //Calculation of the mixed tadix coefficients. Need to be
+    //il doit etre implemente dans une fonction
+    v(0) = results[0].get();
+    mpz_t zw;
+    mpz_t mj;
+    mpz_t vj;
+    mpz_t uk;
+    mpz_t gammak;
+    mpz_init_set_si(zw, 0);
+    mpz_init_set_si(mj, 0);
+    mpz_init_set_si(vj, 0);
+    mpz_init_set_si(uk, 0);
+    mpz_init_set_si(gammak, 0);
+
+    for (size_t k = 1; k < nof_checks; ++k) {
+	mpz_set_ui(mp_gmp[0], p(0));
+	//Calculation of gamma
+	if (k > 1) {
+	    mpz_mul_ui(mp_gmp[k-1], mp_gmp[k - 2], p(k-1));
+	}
+	gamma(k-1) = multinverse(modulo_mp(mp_gmp[k-1], p(k)), p(k));
+	
+	// int tmp = v(k - 1);
+	mpz_set_si(zw, v(k - 1));
+
+	for (ptrdiff_t j = k - 2; j > -1; --j) {
+
+	    // DO: tmp = tmp * m(j) + v(j);
+	    mpz_set_si(mj, p(j));
+	    mpz_mul(zw, zw, mj);
+	    mpz_set_si(vj, v(j));
+	    mpz_add(zw, zw, vj);
+	}
+	// for the negativ representation
+	// DO: v(k) = modulo((u(k) - tmp) * gamma(k - 1), m(k));
+	mpz_set_si(uk, results[k].get());
+	mpz_sub(zw, uk, zw);
+	mpz_set_si(gammak, gamma(k - 1));
+	mpz_mul(zw, zw, gammak);
+	v(k) = modulo_mp(zw, p(k));
+	if (v(k) == 0 || ((p(k)-v(k)) == 1)) {
+	    nord = k;
+	    pool.finished = true;
+	    cout<<endl;
+	    cout << "!!-> Abbruchbedingung erfüllt bei k= " << k << "<-!!"<<endl;
+	    break;
+	}
+    }
+
+    std::thread::id this_idd = std::this_thread::get_id();
+    cout << "thread_idd" << this_idd << endl;
+    cout << "finished" << endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    int sol = 0;
+    mpz_t sol_mp;
+    mpz_init_set_ui(sol_mp, sol);
+    mpz_t tmp;
+    mpz_init(tmp);
     mpz_t prodprim;
-
     mpz_init_set_ui(prodprim, 1);
 
-    p(size - 1) = 1;
-    for (int i = 0; i < size - 1; ++i) {
+    
+    for (size_t i = 0; i < nord; ++i) {
 	mpz_mul_ui(prodprim, prodprim, p(i));
-	p(size - 1) *= p(i);
     }
-    size_t nof_checks = 0;
-    Vector v(100); // need some check
-    Vector mp(100);
-    Vector gamma(100);
-    std::cout << "Job returned :" << endl;
-	for (;;) {
-	    for (int i = 0; i < 50; ++i) {
-		results.emplace(results.begin() + i,
-				pool.submit([&, i]() -> size_t {
-				    return modular_determinant_thread(M, p(i));
-				    // << det << "and thread_id = " << this_id
-				    // << endl;
-				}));
-	    }
-	    //------------------------------------------------------------------
-	    //------------------------------------------------------------------
-	    //-----------------------------------------------------------------
-	    // Calculation of the mixed tadix coefficients. Need to be
-	    // implemented into a function
-
-	    size_t length = 15;
-	    mpz_t mp_gmp[size];
-
-	    for (size_t i = 0; i < length; ++i) {
-		mpz_init_set_ui(mp_gmp[i], 0);
-	    }
-
-
-	    for (size_t k = 0; k < length; ++k) {
-		mp(k) = p(0);
-		mpz_set_ui(mp_gmp[k], p(0));
-		for (size_t i = 1; i < k + 1; ++i) {
-		    // DO:  mp(k) *= m(i);
-		    mpz_mul_ui(mp_gmp[k], mp_gmp[k], p(i));
-		}
-		gamma(k) =
-		  multinverse(modulo_mp(mp_gmp[k], p(k + 1)), p(k + 1));
-	    }
-	    
-	    /*cout<<"gamma(k)="<<endl;
-	    gamma.print();
-	    cout<<endl;
-	    */
-	    // Step 2- Compute the radix coefficients
-	    v(0) = results[0].get();
-	    mpz_t zw;
-	    mpz_t mj;
-	    mpz_t vj;
-	    mpz_t uk;
-	    mpz_t gammak;
-	    mpz_init_set_si(zw, 0);
-	    mpz_init_set_si(mj, 0);
-	    mpz_init_set_si(vj, 0);
-	    mpz_init_set_si(uk, 0);
-	    mpz_init_set_si(gammak, 0);
-
-	    for (size_t k = 1; k < length; ++k) {
-		// int tmp = v(k - 1);
-		mpz_set_si(zw, v(k - 1));
-		for (ptrdiff_t j = k - 2; j > -1; --j) {
-
-		    // DO: tmp = tmp * m(j) + v(j);
-		    mpz_set_si(mj, p(j));
-
-		    mpz_mul(zw, zw, mj);
-		    mpz_set_si(vj, v(j));
-		    mpz_add(zw, zw, vj);
-		}
-
-		// for the negativ representation
-		// DO: v(k) = modulo((u(k) - tmp) * gamma(k - 1), m(k));
-		mpz_set_si(uk, results[k].get());
-		cout<<"uk"<<endl;
-		mpz_out_str(stdout,10,uk);
-		cout <<endl;
-		mpz_sub(zw, uk, zw);
-		mpz_set_si(gammak, gamma(k - 1));
-		mpz_mul(zw, zw, gammak);
-		//cout << "gammak" <<gamma(k-1)<<" and k"<<k<<endl;
-
-		v(k) = modulo_mp(zw, p(k));
-		cout << "v(k)=" << v(k) << endl;
-		if (v(k) == 0) {
-		    cout << "abbruchbedingung erfüllt bei k= " << k << endl;
-		    pool.finished = true;
-		    // break;
-
-		    cout << "------->  coefficients:" << endl;
-		    v.print();
-		    cout << endl;
-
-		    mpz_clear(zw);
-		    mpz_clear(mj);
-		    mpz_clear(vj);
-		    mpz_clear(uk);
-		    for (size_t i = 0; i < length; ++i) {
-			mpz_clear(mp_gmp[i]);
-		    }
-
-		    cout << "im giving up" << endl;
-		    goto jump; 
-		}
-	    }
-	}
-    /*cout << "------->  coefficients:" << endl;
+    
+    cout<<endl;
     v.print();
-    cout << endl;
+    cout<<endl;
+        
+    for (ptrdiff_t k = nord; k > -1; --k){
+        //DO complete: sol = sol*m(k) + v(k);
+        //DO-step1  tmp = sol*m(k)
+        mpz_mul_ui(tmp, sol_mp, p(k));
 
+        //DO-step2 sol = tmp  + v(k)
+        mpz_add_ui(sol_mp, tmp, v(k));
+    }
+    cout<<"prodprim"<<endl;
+    mpz_out_str(stdout,10,prodprim);
+    cout<<endl;
+    to_symmetric_mp(sol_mp, prodprim);
+    cout<<endl<<endl<<"determinant=";
+    mpz_out_str(stdout,10,sol_mp);
+    cout<<endl;
+    // CLEARING
     mpz_clear(zw);
     mpz_clear(mj);
     mpz_clear(vj);
     mpz_clear(uk);
-    for (size_t i = 0; i < length; ++i) {
-	mpz_clear(mp_gmp[i]);
-    }*/
-    //----------------------------------------------------------------------
-    //######################################################################
-    jump:
-    std::thread::id this_idd = std::this_thread::get_id();
-    cout << "thread_idd" << this_idd << endl;
+    mpz_clear(tmp);
+    mpz_clear(sol_mp);
+    mpz_clear(prodprim);
 
-    cout << "finished" << endl;
+    for (size_t i = 0; i < nof_checks; ++i) {
+	mpz_clear(mp_gmp[i]);
+    }
 }
+
