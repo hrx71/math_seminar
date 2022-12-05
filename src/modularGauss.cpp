@@ -90,7 +90,6 @@ modular_gauss(Matrix& A, size_t p)
     std::thread::id this_id = std::this_thread::get_id();
     cout << "Thread: " << this_id << endl;
     cout << "det for p= " << p << " det = " << det << endl;
-    // cout<<"fdet_inv"<<fdet_inv<<endl;
     return det;
 }
 
