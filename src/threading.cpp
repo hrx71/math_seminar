@@ -145,9 +145,18 @@ main()
 
 	size_t nof_jobs = 100;
 	size_t nord;
-	Vector p =
-	  read_vector_from_file("../include/primes64bit.txt", nof_jobs);
 
+	// Auswahl der primzahlen je nach dem, welche Größe von long int zur Verfügung steht.
+	// Long int ist die deterministische Größe, da diese die Eingabe für mpz_t ist
+	cout << "Checking platform dependant size of long int...\n";
+	string path;
+	if (sizeof(long) == 8){
+		path = "../include/primes64bit.txt";
+	} else {
+		path = "../include/primes32bit.txt";
+	}
+	Vector p =
+	  read_vector_from_file(path, nof_jobs);
 	Vector v(nof_jobs); // need some check
 	Vector gamma(nof_jobs);
 	mpz_t mp_gmp[nof_jobs];
