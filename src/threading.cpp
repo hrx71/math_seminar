@@ -1,107 +1,24 @@
 #include "../include/matrix.hpp"
 #include "../include/vec.hpp"
+#include "../include/thread_pool.hpp"
 #include "modularGauss.cpp"
 #include "read_matrix.cpp"
 #include "read_vector.cpp"
-#include <cassert>
 #include <chrono>
-#include <condition_variable>
-#include <deque>
-#include <functional>
-#include <future>
 #include <gmpxx.h>
 #include <iostream>
-#include <mutex>
 #include <string>
-#include <thread>
-#include <utility>
 #include <vector>
+
 using namespace std;
-template<typename T>
-struct ThreadPool
-{
-  public:
-    // Moved to public to get access for break condition!!
-    //    std::condition_variable cv;
-    bool finished;
-    using Job = std::packaged_task<T()>;
-    ThreadPool(unsigned int nof_threads)
-      : finished(false)
-      , active(0)
-
-      , threads(nof_threads)
-    {
-	for (auto& t : threads) {
-	    t = std::thread([=]() { process_jobs(); });
-	}
-    }
-    ~ThreadPool()
-    {
-	{
-	    std::unique_lock lock(mutex);
-	    finished = true;
-	}
-	cv.notify_all();
-	for (auto& t : threads) {
-	    t.join();
-	}
-    }
-    template<typename Task>
-    std::future<T>
-    submit(Task task)
-    {
-	Job job(task);
-	auto result = job.get_future();
-	std::unique_lock lock(mutex);
-	jobs.emplace_back(std::move(job));
-	cv.notify_one();
-	return result;
-    }
-
-  private:
-    unsigned int active;
-    std::vector<std::thread> threads;
-    std::mutex mutex;
-    std::condition_variable cv;
-    std::deque<Job> jobs;
-
-    void
-    process_jobs()
-    {
-	for (;;) {
-	    Job job;
-	    /* fetch job */
-	    {
-		std::unique_lock lock(mutex);
-		while (jobs.empty() && (active > 0 || !finished)) {
-		    cv.wait(lock);
-		}
-		if (jobs.empty() || finished)
-		    break;
-		job = std::move(jobs.front());
-		jobs.pop_front();
-		++active;
-	    }
-	    /* execute job */
-	    job();
-	    {
-		std::unique_lock lock(mutex);
-		--active;
-	    }
-	}
-	/* if one thread finishes, all others have to finish as well */
-	cv.notify_all();
-    }
-};
-
 int
 main()
 {
     cout << "** This program has different options. The main options are to "
-	    "calculate the exact determinant of a square integer matrix and to "
-	    "characterize the matrix ( regular or singular)"
-	    "solving linear systems of equations and to the determine wheter a "
-	    "matrix is singular or regluar. The program is parallelized using "
+	    "calculate the exact determinant of a square integer matrix with the"
+	    "characterization of  the matrix (regular or singular) and the second main option,"
+	    "solving linear systems of equations."
+	    "The program is parallelized using "
 	    "Multithreading with Master-Worker pattern. The Synchronization is done with promises and future. To represent the determinant, the whole program works with the Big-Integer Library gmp."
 
 
@@ -116,7 +33,6 @@ main()
     string application;
     cin >> application;
 
-    cout << application << endl;
     if (application == "calc.") {
 
 	cout << endl
@@ -148,7 +64,7 @@ main()
 
 	// Auswahl der primzahlen je nach dem, welche Größe von long int zur Verfügung steht.
 	// Long int ist die deterministische Größe, da diese die Eingabe für mpz_t ist
-	cout << "Checking platform dependant size of long int...\n";
+	cout << endl << "Checking platform dependant size of long int...\n"<< endl;
 	string path;
 	if (sizeof(long) == 8){
 		path = "../include/primes64bit.txt";
