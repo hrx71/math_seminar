@@ -1,6 +1,6 @@
 #include "../include/matrix.hpp"
-#include "../include/vec.hpp"
 #include "../include/thread_pool.hpp"
+#include "../include/vec.hpp"
 #include "modularGauss.cpp"
 #include "read_matrix.cpp"
 #include "read_vector.cpp"
@@ -14,26 +14,32 @@ using namespace std;
 int
 main()
 {
-    cout << "** This program has different options. The main options are to "
-	    "calculate the exact determinant of a square integer matrix with the"
-	    "characterization of  the matrix (regular or singular) and the second main option,"
-	    "solving linear systems of equations."
-	    "The program is parallelized using "
-	    "Multithreading with Master-Worker pattern. The Synchronization is done with promises and future. To represent the determinant, the whole program works with the Big-Integer Library gmp."
-
-
-	 << endl
-	 << endl;
-    cout << "Please start to select your application:" << endl;
+    cout << endl<< "This program has several options. On the one hand the check of "
+	    "the regularity of a square integer matrix and in the regular case "
+	    "the exact calculation of the determinant. On the other hand the "
+	    "solution of a linear system of equations. The program is "
+	    "parallelized by multithreading with master-worker pattern. The "
+	    "synchronization is done with Promises and Future. To assemble the "
+	    "partial results from homorphic images to the determinant, the "
+	    "program works with the Big-Integer Library gmp."
+    << endl;
+    cout <<endl<< "Please select your application:" << endl;
     cout << "Options are:" << endl
-	 << "a) calc. determinant" << endl
-	 << "b) solve lse"
-	 << endl;
+	 << "For calculation of the determinant, type in 'a'" << endl
+	 << "For solving a system of linear equations, type in 'b'" << endl;
 
     string application;
     cin >> application;
 
-    if (application == "calc.") {
+    cout << endl << "Checking platform dependant size of long int\n" << endl;
+    string path;
+    if (sizeof(long) == 8) {
+	path = "../include/primes64bit.txt";
+    } else {
+	path = "../include/primes32bit.txt";
+    }
+    Vector p = read_vector_from_file(path, 100);
+    if (application == "a") {
 
 	cout << endl
 	     << "Please choose your matrix from data(e.g. matrix1)" << endl;
@@ -50,8 +56,8 @@ main()
 	int nof_threads = thread::hardware_concurrency();
 	string parallel_hardw = to_string(nof_threads);
 
-	res = "Yout have " + parallel_hardw +
-	      " Threads for the Parallelization  aviable.";
+	res = "You have " + parallel_hardw +
+	      " Threads for the parallelization available.";
 	cout << endl << res << endl << endl;
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -62,17 +68,9 @@ main()
 	size_t nof_jobs = 100;
 	size_t nord;
 
-	// Auswahl der primzahlen je nach dem, welche Größe von long int zur Verfügung steht.
-	// Long int ist die deterministische Größe, da diese die Eingabe für mpz_t ist
-	cout << endl << "Checking platform dependant size of long int...\n"<< endl;
-	string path;
-	if (sizeof(long) == 8){
-		path = "../include/primes64bit.txt";
-	} else {
-		path = "../include/primes32bit.txt";
-	}
-	Vector p =
-	  read_vector_from_file(path, nof_jobs);
+	// Auswahl der primzahlen je nach dem, welche Größe von long int zur
+	// Verfügung steht. Long int ist die deterministische Größe, da diese
+	// die Eingabe für mpz_t ist
 	Vector v(nof_jobs); // need some check
 	Vector gamma(nof_jobs);
 	mpz_t mp_gmp[nof_jobs];
@@ -89,8 +87,7 @@ main()
 	}
 
 	//-----------------------------------------------------------------
-	// Calculation of the mixed tadix coefficients. Need to be
-	// il doit etre implemente dans une fonction
+	// Calculation of the mixed tadix coefficients.
 	v(0) = results[0].get();
 	mpz_t zw;
 	mpz_t mj;
@@ -133,7 +130,7 @@ main()
 		nord = k;
 		pool.finished = true;
 		cout << endl;
-		cout << "!!-> Abbruchbedingung erfüllt bei k= " << k << "<-!!"
+		cout << "Break condition met at number of primes = " << k
 		     << endl;
 		break;
 	    }
@@ -141,7 +138,7 @@ main()
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	cout << endl
-	     << "Calculating the determinant from all isomorphic images..."
+	     << "Calculating the determinant from all homomorphic images"
 	     << endl;
 
 	int sol = 0;
@@ -166,11 +163,10 @@ main()
 	}
 	cout << endl;
 	to_symmetric_mp(sol_mp, prodprim);
-	cout << endl << endl << "determinant=";
+	cout << endl << endl << "determinant = ";
 	mpz_out_str(stdout, 10, sol_mp);
-	
-	if (mpz_cmp_ui(sol_mp,0)==0) 
-	{
+
+	if (mpz_cmp_ui(sol_mp, 0) == 0) {
 	    cout << endl << "The Matrix is singular.!" << endl;
 	}
 	cout << endl << endl << endl;
@@ -187,10 +183,31 @@ main()
 	for (size_t i = 0; i < nof_jobs; ++i) {
 	    mpz_clear(mp_gmp[i]);
 	}
+
+    } else if (application == "b") {
+
+	string matrixs;
+	string vectors;
+	string base = "../data/";
+
+	cout << endl;
+	cout << "Please choose your matrix from data (e.g. matrix1)" << endl;
+	cin >> matrixs;
+
+	cout << endl
+	     << "Please choose your vector from data (e.g. rhs)" << endl;
+	cin >> vectors;
+	string res = base + matrixs + ".txt";
+	string rhs_str = base + vectors + ".txt";
+
+	cout << endl << "Reading matrix and vectors in" << endl;
+	Matrix M = read_matrix_from_file(res);
+	Vector rhs = read_vector_from_file(rhs_str, M.n);
+	Matrix coeff = modular_cramer(M, rhs, p);
     } else {
 	cout
 	  << endl
-	  << "!Error----Please choose one of the available application-options"
+	  << "Error!-Please select one of the available application-options"
 	  << endl;
     }
 }

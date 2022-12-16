@@ -2,7 +2,6 @@
 #include <thread>
 #include "modulo.cpp"
 #include "multinverse.cpp"
-//#include <funcs.hpp>
 using namespace std;
 
 /**
@@ -27,8 +26,6 @@ modular_gauss(Matrix& A, size_t p)
 	    A(i, j) = modulo(A(i, j), p);
 	}
     }
-    // cout << "Matrix modulo p: " << p << endl;
-    // A.print();
     ptrdiff_t fdet = 1; // corrector for determinant when multiplying a row
     int sign = 1;	// corrector for determinant when swapping rows
     ptrdiff_t det = 1;
@@ -63,33 +60,17 @@ modular_gauss(Matrix& A, size_t p)
 		A(v(j), k) =
 		  modulo(A(v(j), k) * A(v(i), i) - A(v(i), k) * tmp, p);
 	    }
-	    //	    cout << endl;
-	    //	    cout << "i=" << i << " "
-	    //		 << "j=" << j << endl;
-	    //	    A.print();
-	    //	    cout << endl;
 	}
     }
-    // cout<<"here after gauss"<<endl;
-    /*cout << "gauss matrix for p=:" << p << endl;
-    A.print();*/
     //  compute determinant
     for (size_t i = 0; i < A.m; ++i) {
 	det = modulo(det * A(v(i), i), p);
     }
     // correction of the determinant
-    // source of this method:
-    // https://stackoverflow.com/questions/12235110/modulo-of-division-of-two-numbers
-    //	cout<<"det ="<<det<<endl;
-    // cout<<"p="<<p<<endl;
-    // cout<<"before multinverse"<<endl;
 
     size_t fdet_inv =
       multinverse(fdet, p); // compute inverse value to avoid dividing
     det = modulo(det * fdet_inv * sign, p);
-    std::thread::id this_id = std::this_thread::get_id();
-    cout << "Thread: " << this_id << endl;
-    cout << "det for p= " << p << " det = " << det << endl;
     return det;
 }
 
@@ -183,35 +164,6 @@ modular_cramer(Matrix& A, Vector& rhs, const Vector& primes)
  * @param primes
  * @return Vector
  */
-Vector
-modular_determinant(Matrix& A, const Vector& primes, bool questionisregular)
-{
-    assert(A.m == A.n);
-    Vector coefficients(primes.m - 1);
-    for (size_t i = 0; i < primes.m - 1; ++i) {
-	// compute determinants with modular Gauss and p(i) as prime number
-	// first, compute d
-	size_t p = primes(i);
-	//		cout << "This is prime number p = " << p << "\n";
-	//		A.print();
-	Matrix Acopy = copy_matrix(A);
-	// Matrix Acopy1 = copy_matrix(A);
-
-	coefficients(i) = modular_gauss(Acopy, p);
-	if (questionisregular) {
-	    if (coefficients(i) != 0) {
-		cout << "Matrix is regular!" << endl;
-		break;
-	    }
-	}
-    }
-    /*	cout << "coefficient vector:" << endl;
-	    coefficients.print();*/
-    if (questionisregular) {
-	cout << "Matrix is singular!" << endl;
-    }
-    return coefficients;
-}
 
 size_t
 modular_determinant_thread(Matrix& A, const size_t& p)
@@ -222,74 +174,4 @@ modular_determinant_thread(Matrix& A, const size_t& p)
     size_t coefficients = modular_gauss(Acopy, p);
     return coefficients;
 }
-
-
-/*Vector
-modular_determinant_thread(Matrix &A, const Vector &primes, bool questionisregular)
-{
-	assert(A.m == A.n);
-	Vector coefficients(primes.m - 1);
-
-	// get number of possible threads
-	int nof_threads = thread::hardware_concurrency();
-	vector<thread> threads(nof_threads);
-	// create vector of threads
-	// vector<thread> threads(nof_threads);
-	cout << primes.m << endl;
-
-	for (size_t i = 0; i < primes.m - 1; i = i + nof_threads)
-	{
-		cout << i << endl;
-		
-		int limit;
-		if ((i + 1) * nof_threads > primes.m)
-		{
-			limit = primes.m - nof_threads * i;
-		}
-		else
-		{
-			limit = nof_threads;
-		}
-		for (int index = 0; index < limit; ++index)
-		{
-			size_t p = primes(i + index);
-			threads[index] = std::thread([index, i, p]()
-										 { cout << "This thread uses prime number with index " << i << "! working on p = " << p << "\n"; });
-		}
-		
-		// first nof_threads coefficients available
-		// 
-	}
-	for (auto &t : threads)
-		{
-			if (t.joinable())
-				t.join();
-		}
-	
-	// compute determinants with modular Gauss and p(i) as prime number
-	// first, compute d
-	size_t p = primes(i);
-	//		cout << "This is prime number p = " << p << "\n";
-	//		A.print();
-	Matrix Acopy = copy_matrix(A);
-	// Matrix Acopy1 = copy_matrix(A);
-
-	coefficients(i) = modular_gauss(Acopy, p);
-	if (questionisregular)
-	{
-		if (coefficients(i) != 0)
-		{
-			cout << "Matrix is regular!" << endl;
-			return 0;
-		}
-	}
-if (questionisregular)
-{
-	cout << "Matrix is singular!" << endl;
-}
-
-	// join threads
-
-	return coefficients;
-}*/
 

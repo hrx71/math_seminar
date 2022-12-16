@@ -24,9 +24,3 @@ Vector read_vector_from_file(string filepath, int nof_lines) {
     return primes;
 }
 
-// Test of the function
-/*int main(){
-    Vector primes = read_primes("../include/primes.txt", 200);
-    primes.print();
-    return 0;
-}*/

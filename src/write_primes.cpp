@@ -1,7 +1,5 @@
 // C++ program to print all primes smaller than or equal to
 // n using Sieve of Eratosthenes
-// sources: https://www.geeksforgeeks.org/sieve-of-eratosthenes/
-// https://www.delftstack.com/de/howto/cpp/cpp-write-to-file/
 #include <bits/stdc++.h>
 #include "../include/vec.hpp"
 #include <fstream>
@@ -16,9 +14,7 @@ Vector SieveOfEratosthenes(size_t n)
     bool *prime = new bool[n+1];
     for (size_t i = 0; i < n+1; ++i){
         prime[i] = true;
-        //std::cout << i;
     }
-    //memset(prime, true, sizeof(prime)); //initalize all entries with true
     size_t nof_p = n-1;   
 
     for (size_t p = 2; p * p <= n; p++) {
@@ -46,12 +42,7 @@ Vector SieveOfEratosthenes(size_t n)
             i += 1;
         }
     }
-    //primes.print();
 
-
-    // write last 200 prime numbers in a file    
-    // file will be overwritten
-    //string filename("../include/primes64bit.txt");
     string filename("../include/primes32bit.txt");
     fstream file_out;
 

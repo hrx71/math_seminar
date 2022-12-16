@@ -29,8 +29,6 @@ multinverse(ptrdiff_t a, size_t b)
  
         // Update y and x
         y = x - q * y;
-//	cout<<"q*y="<<q*y<<endl;
-//	cout<<"x="<<x<<endl;
 	x = t;
     }
  
