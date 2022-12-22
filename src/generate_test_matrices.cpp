@@ -14,16 +14,30 @@
 
 using namespace std;
 
+ptrdiff_t power(ptrdiff_t base, int exponent){
+	ptrdiff_t res = 1;
+	if (exponent == 0){
+		return(res);
+	} else {
+		for (int i = exponent; i > 0; --i){
+			res *= base;
+		}
+	}
+	return(res);
+}
+
 Matrix vandermonde(Vector& v){
     size_t size = v.m;
     Matrix V(size, size, StorageOrder::RowMajor);
     for (size_t j= 0; j < V.n; ++j){ //loop over columns
         for (size_t i = 0; i < V.m; ++i){//loop over rows
-            V(i,j) =  pow(v(i),j);
+            V(i,j) =  power(v(i),j);
         }
     }
     return V;
 }
+
+
 
 int main(){
     //n: size of matrix
@@ -59,7 +73,7 @@ int main(){
     Vector p = read_vector_from_file(path, 100);
     int nof_threads = thread::hardware_concurrency();
 	string parallel_hardw = to_string(nof_threads);
-
+{}
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
